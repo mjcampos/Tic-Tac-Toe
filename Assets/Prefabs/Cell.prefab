@@ -88,3 +88,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bfb52e7bf0d0390428c80c01a3278ffc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  row: 0
+  column: 0
+  xSprite: {fileID: 3959922740387019359, guid: e568b730e5b229b4fa2e653ae868c009, type: 3}
+  oSprite: {fileID: -1937887712669590171, guid: ec58687194ca56a45aa82a9f4c6264ed, type: 3}
