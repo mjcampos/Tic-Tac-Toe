@@ -25,16 +25,13 @@ public class Cell : MonoBehaviour, IPointerClickHandler {
         CycleState();
     }
 
-    void CycleState()
-    {
+    void CycleState() {
         _currentState = (CellState)(((int)_currentState + 1) % 3);
         UpdateVisual();
     }
 
-    void UpdateVisual()
-    {
-        switch (_currentState)
-        {
+    void UpdateVisual() {
+        switch (_currentState) {
             case CellState.None:
                 _image.sprite = null;
                 break;
