@@ -1,47 +1,105 @@
 using System;
 using UnityEngine;
 
-public class BattleManager : MonoBehaviour {
-    public static BattleManager Instance {get; private set;}
-    
-    [SerializeField] TurnState currentPhase = TurnState.PlayerTurn;
+namespace Singletons {
+    public class BattleManager : MonoBehaviour {
+        public static BattleManager Instance {get; private set;}
+        
+        [SerializeField] TurnState currentPhase = TurnState.PlayerTurn;
+        
+        CellState[,] _grid = new CellState[3, 3];
+        Vector2Int? _lastPlayerMove = null;
 
-    void Awake() {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
+        void Awake() {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(gameObject);
+                return;
+            }
+            
+            Instance = this;
         }
-        
-        Instance = this;
-    }
 
-    public void PlayerEndsTurn() {
-        AdvanceTurn();
-    }
+        void Start() {
+            ResetGrid();
+        }
 
-    void PlayerStartsTurn() {
-        UIManager.Instance.StartPlayerTurn();
-    }
+        void ResetGrid() {
+            for (int row = 0; row < 3; row++) {
+                for (int col = 0; col < 3; col++) {
+                    _grid[row, col] = CellState.None;
+                }
+            }
+        }
 
-    void AdvanceTurn() {
-        int next = (int)currentPhase + 1;
-        
-        // Check if it exceeds the max enum value, loop back to 0
-        if (next >= Enum.GetValues(typeof(TurnState)).Length) next = 0;
-        
-        // Cast back to the enum and assign
-        currentPhase = (TurnState)next;
+        public void PlayerEndsTurn() {
+            AdvanceTurn();
+        }
 
-        switch (currentPhase) {
-            case TurnState.PlayerTurn:
-                Debug.Log("Player Turn");
-                PlayerStartsTurn();
-                break;
-            case TurnState.EnemyTurn:
-                Debug.Log("Enemy Turn");
-                AdvanceTurn();
-                break;
+        void PlayerStartsTurn() {
+            UIManager.Instance.StartPlayerTurn();
+        }
+
+        void AdvanceTurn() {
+            int next = (int)currentPhase + 1;
+            
+            // Check if it exceeds the max enum value, loop back to 0
+            if (next >= Enum.GetValues(typeof(TurnState)).Length) next = 0;
+            
+            // Cast back to the enum and assign
+            currentPhase = (TurnState)next;
+
+            switch (currentPhase) {
+                case TurnState.PlayerTurn:
+                    Debug.Log("Player Turn");
+                    PlayerStartsTurn();
+                    break;
+                case TurnState.EnemyTurn:
+                    Debug.Log("Enemy Turn");
+                    AdvanceTurn();
+                    break;
+            }
+        }
+
+        void SetCellState(int row, int col, CellState state) {
+            _grid[row, col] = state;
+        }
+
+        public CellState GetCellState(int row, int column) {
+            return _grid[row, column];
+        }
+
+        CellState GetNextState(CellState current) {
+            switch (current) {
+                case CellState.None:
+                    return CellState.X;
+                case CellState.X:
+                    return CellState.O;
+                case CellState.O:
+                    return CellState.None;
+                default:
+                    return CellState.None;
+            }
+        }
+
+        void ClearPreviousCell() {
+            if (_lastPlayerMove  != null) {
+                SetCellState(_lastPlayerMove.Value.x, _lastPlayerMove.Value.y, CellState.None);
+                
+                // Message the cell to convert its UI to none
+                GridManager.Instance.ClearACell(_lastPlayerMove.Value.x, _lastPlayerMove.Value.y);
+            }
+        }
+
+        public void OnPlayerClickCell(int row, int col) {
+            CellState current = GetCellState(row, col);
+            CellState next = GetNextState(current);
+            
+            // Clear up the previously selected cell
+            ClearPreviousCell();
+            
+            SetCellState(row, col, next);
+            _lastPlayerMove = new Vector2Int(row, col);
         }
     }
 }

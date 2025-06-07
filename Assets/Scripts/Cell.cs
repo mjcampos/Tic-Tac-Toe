@@ -1,4 +1,5 @@
 using System;
+using Singletons;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
@@ -12,7 +13,6 @@ public class Cell : MonoBehaviour, IPointerClickHandler {
     [SerializeField] Sprite xSprite;
     [SerializeField] Sprite oSprite;
     
-    CellState _currentState = CellState.None;
     Image _image;
 
     void Start() {
@@ -22,16 +22,14 @@ public class Cell : MonoBehaviour, IPointerClickHandler {
     }
 
     public void OnPointerClick(PointerEventData eventData) {
-        CycleState();
-    }
-
-    void CycleState() {
-        _currentState = (CellState)(((int)_currentState + 1) % 3);
+        BattleManager.Instance.OnPlayerClickCell(row, column);
         UpdateVisual();
     }
 
     void UpdateVisual() {
-        switch (_currentState) {
+        CellState state = BattleManager.Instance.GetCellState(row, column);
+        
+        switch (state) {
             case CellState.None:
                 _image.sprite = null;
                 break;
@@ -45,5 +43,9 @@ public class Cell : MonoBehaviour, IPointerClickHandler {
                 _image.sprite = null;
                 break;
         }
+    }
+
+    public void ClearCell() {
+        UpdateVisual();
     }
 }

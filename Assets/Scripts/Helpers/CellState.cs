@@ -1,6 +1,6 @@
 using UnityEngine;
 
-enum CellState {
+public enum CellState {
     None,
     X,
     O
