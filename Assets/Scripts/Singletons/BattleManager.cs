@@ -8,11 +8,10 @@ namespace Singletons {
         [SerializeField] TurnState currentPhase = TurnState.PlayerTurn;
         
         CellState[,] _grid = new CellState[3, 3];
-        Vector2Int? _lastPlayerMove = null;
+        Vector2Int? _lastPlayerMove;
 
         void Awake() {
-            if (Instance != null && Instance != this)
-            {
+            if (Instance != null && Instance != this) {
                 Destroy(gameObject);
                 return;
             }
@@ -33,6 +32,8 @@ namespace Singletons {
         }
 
         public void PlayerEndsTurn() {
+            LockCell();
+            _lastPlayerMove = null;
             AdvanceTurn();
         }
 
@@ -82,24 +83,30 @@ namespace Singletons {
             }
         }
 
-        void ClearPreviousCell() {
+        public void OnPlayerClickCell(int row, int col) {
+            CellState current = GetCellState(row, col);
+            CellState next = GetNextState(current);
+            
+            // Clear up the previously selected cell
             if (_lastPlayerMove  != null) {
                 SetCellState(_lastPlayerMove.Value.x, _lastPlayerMove.Value.y, CellState.None);
                 
                 // Message the cell to convert its UI to none
                 GridManager.Instance.ClearACell(_lastPlayerMove.Value.x, _lastPlayerMove.Value.y);
             }
-        }
-
-        public void OnPlayerClickCell(int row, int col) {
-            CellState current = GetCellState(row, col);
-            CellState next = GetNextState(current);
             
-            // Clear up the previously selected cell
-            ClearPreviousCell();
+            // Enable End Turn button is next value is not blank
+            UIManager.Instance.InteractWithEndButton(next != CellState.None);
             
             SetCellState(row, col, next);
             _lastPlayerMove = new Vector2Int(row, col);
+        }
+
+        // Lock cell to prevent future interactions
+        void LockCell() {
+            if (_lastPlayerMove != null) {
+                GridManager.Instance.LockACell(_lastPlayerMove.Value.x, _lastPlayerMove.Value.y);
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ using System;
 using Singletons;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Singletons {
     public class UIManager : MonoBehaviour {
@@ -20,8 +21,13 @@ namespace Singletons {
             Instance = this;
         }
 
+        void Start() {
+            endTurnButton.GetComponent<Button>().interactable = false;
+        }
+
         public void EndPlayerTurn() {
             endTurnButton.SetActive(false);
+            endTurnButton.GetComponent<Button>().interactable = false;
             turnText.text = "Enemy Turn";
             
             BattleManager.Instance.PlayerEndsTurn();
@@ -30,6 +36,10 @@ namespace Singletons {
         public void StartPlayerTurn() {
             endTurnButton.SetActive(true);
             turnText.text = "Player Turn";
+        }
+
+        public void InteractWithEndButton(bool val) {
+            endTurnButton.GetComponent<Button>().interactable = val;
         }
     }
 }

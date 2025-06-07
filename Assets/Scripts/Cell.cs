@@ -48,4 +48,8 @@ public class Cell : MonoBehaviour, IPointerClickHandler {
     public void ClearCell() {
         UpdateVisual();
     }
+
+    public void LockCell() {
+        _image.raycastTarget = false;
+    }
 }
