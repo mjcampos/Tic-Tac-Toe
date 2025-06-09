@@ -66,22 +66,26 @@ namespace Singletons {
             BoardPosition[row, col] = state;
         }
 
-        CellState GetNextState(CellState current) {
+        CellState GetNextPlayerState(CellState current) {
             switch (current) {
                 case CellState.None:
                     return CellState.X;
                 case CellState.X:
-                    return CellState.O;
-                case CellState.O:
                     return CellState.None;
                 default:
                     return CellState.None;
             }
         }
 
+        /*
+         * Player is X, enemy is O
+         * When player clicks on a cell:
+         * 1. Cell gets updated to X or None
+         * 2. Previously selected cell returns to None
+         */
         public void OnPlayerClickCell(int row, int col) {
             CellState current = BoardPosition[row, col];
-            CellState next = GetNextState(current);
+            CellState next = GetNextPlayerState(current);
             
             // Clear up the previously selected cell
             if (_lastPlayerMove  != null) {
