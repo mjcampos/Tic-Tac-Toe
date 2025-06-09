@@ -7,7 +7,8 @@ namespace Singletons {
         public static UIManager Instance {get; private set;}
 
         [SerializeField] GameObject endTurnButton;
-        [SerializeField] TextMeshProUGUI turnText;
+        [SerializeField] TextMeshProUGUI winnerText;
+        [SerializeField] TextMeshProUGUI replayText;
 
         void Awake() {
             if (Instance != null && Instance != this) {
@@ -20,23 +21,26 @@ namespace Singletons {
 
         void Start() {
             endTurnButton.GetComponent<Button>().interactable = false;
+            replayText.gameObject.SetActive(false);
         }
 
         public void EndPlayerTurn() {
             endTurnButton.SetActive(false);
             endTurnButton.GetComponent<Button>().interactable = false;
-            turnText.text = "Enemy Turn";
             
             BattleManager.Instance.EndTurn();
         }
 
         public void StartPlayerTurn() {
             endTurnButton.SetActive(true);
-            turnText.text = "Player Turn";
         }
 
         public void InteractWithEndButton(bool val) {
             endTurnButton.GetComponent<Button>().interactable = val;
+        }
+
+        public void DisplayWinner(string winnerMessage) {
+            winnerText.text = winnerMessage;replayText.gameObject.SetActive(true);
         }
     }
 }

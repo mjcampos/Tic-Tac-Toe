@@ -34,7 +34,19 @@ namespace Singletons {
         public void EndTurn() {
             LockCell();
             _lastMovePlayed = null;
-            AdvanceTurn();
+            
+            // Check if there's a winner or a draw
+            CellState winner = AI.CheckWinner(BoardPosition);
+
+            if (winner == CellState.X) {
+                GameManager.Instance.GameOverSequence(WinState.Player);
+            } else if (winner == CellState.O) {
+                GameManager.Instance.GameOverSequence(WinState.Enemy);
+            } else if (AI.IsBoardFull(BoardPosition)) {
+                GameManager.Instance.GameOverSequence(WinState.Draw);
+            } else {
+                AdvanceTurn();
+            }
         }
 
         void PlayerStartsTurn() {

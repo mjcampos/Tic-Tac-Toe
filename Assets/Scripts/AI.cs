@@ -53,7 +53,7 @@ public class AI
         return bestScore;
     }
 
-    static bool IsBoardFull(CellState[,] board) {
+    public static bool IsBoardFull(CellState[,] board) {
         for (int row = 0; row < 3; row++) {
             for (int col = 0; col < 3; col++) {
                 if (board[row, col] == CellState.None) {
@@ -65,7 +65,7 @@ public class AI
         return true;
     }
 
-    static CellState CheckWinner(CellState[,] board) {
+    public static CellState CheckWinner(CellState[,] board) {
         // Rows and columns
         for (int i = 0; i < 3; i++) {
             if (board[i, 0] != CellState.None && board[i, 0] == board[i, 1] && board[i, 1] == board[i, 2]) {

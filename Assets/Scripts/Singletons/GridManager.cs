@@ -5,6 +5,8 @@ namespace Singletons {
         public static GridManager Instance {get; private set;}
         
         Cell[,] _grid = new  Cell[3, 3];
+        int _rows = 3;
+        int _cols = 3;
         
         void Awake() {
             if (Instance != null && Instance != this) {
@@ -21,12 +23,10 @@ namespace Singletons {
 
         void GetCells() {
             Cell[] childCells = GetComponentsInChildren<Cell>();
-            int rows = 3;
-            int cols = 3;
 
-            for (int row = 0; row < rows; row++) {
-                for (int col = 0; col < cols; col++) {
-                    _grid[row, col] = childCells[row *  cols + col];
+            for (int row = 0; row < _rows; row++) {
+                for (int col = 0; col < _cols; col++) {
+                    _grid[row, col] = childCells[row *  _cols + col];
                 }
             }
         }
@@ -37,6 +37,14 @@ namespace Singletons {
         
         public void LockACell(int row, int col) {
             _grid[row, col].LockCell();
+        }
+        
+        public void LockAllCells() {
+            for (int row = 0; row < _rows; row++) {
+                for (int col = 0; col < _cols; col++) {
+                    _grid[row, col].LockCell();
+                }
+            }
         }
     }
 }
