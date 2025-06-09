@@ -1,5 +1,3 @@
-using System;
-using Singletons;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -12,8 +10,7 @@ namespace Singletons {
         [SerializeField] TextMeshProUGUI turnText;
 
         void Awake() {
-            if (Instance != null && Instance != this)
-            {
+            if (Instance != null && Instance != this) {
                 Destroy(gameObject);
                 return;
             }

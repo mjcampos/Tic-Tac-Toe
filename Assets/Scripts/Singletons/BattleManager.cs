@@ -7,7 +7,7 @@ namespace Singletons {
         
         [SerializeField] TurnState currentPhase = TurnState.PlayerTurn;
         
-        CellState[,] _grid = new CellState[3, 3];
+        public CellState[,] BoardPosition { get; } = new CellState[3, 3];
         Vector2Int? _lastPlayerMove;
 
         void Awake() {
@@ -26,7 +26,7 @@ namespace Singletons {
         void ResetGrid() {
             for (int row = 0; row < 3; row++) {
                 for (int col = 0; col < 3; col++) {
-                    _grid[row, col] = CellState.None;
+                    BoardPosition[row, col] = CellState.None;
                 }
             }
         }
@@ -63,11 +63,7 @@ namespace Singletons {
         }
 
         void SetCellState(int row, int col, CellState state) {
-            _grid[row, col] = state;
-        }
-
-        public CellState GetCellState(int row, int column) {
-            return _grid[row, column];
+            BoardPosition[row, col] = state;
         }
 
         CellState GetNextState(CellState current) {
@@ -84,7 +80,7 @@ namespace Singletons {
         }
 
         public void OnPlayerClickCell(int row, int col) {
-            CellState current = GetCellState(row, col);
+            CellState current = BoardPosition[row, col];
             CellState next = GetNextState(current);
             
             // Clear up the previously selected cell

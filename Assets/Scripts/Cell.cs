@@ -1,4 +1,3 @@
-using System;
 using Singletons;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -27,7 +26,7 @@ public class Cell : MonoBehaviour, IPointerClickHandler {
     }
 
     void UpdateVisual() {
-        CellState state = BattleManager.Instance.GetCellState(row, column);
+        CellState state = BattleManager.Instance.BoardPosition[row, column];
         
         switch (state) {
             case CellState.None:
