@@ -40,6 +40,7 @@ namespace Singletons {
          * 1. Lock all cells to prevent updates
          * 2. Give player the chance to restart
          * 3. Display winner
+         * 4. Highlight winning cells if there's a winner
          */
         public void GameOverSequence(WinState winner) {
             // Step 1
@@ -62,6 +63,11 @@ namespace Singletons {
                 default:
                     UIManager.Instance.DisplayWinner("");
                     break;
+            }
+
+            // Step 4
+            if (winner == WinState.Player || winner == WinState.Enemy) {
+                GridManager.Instance.HighlightWinningCells(winner);
             }
         }
     }

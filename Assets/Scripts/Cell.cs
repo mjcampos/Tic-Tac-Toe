@@ -51,4 +51,8 @@ public class Cell : MonoBehaviour, IPointerClickHandler {
     public void LockCell() {
         _image.raycastTarget = false;
     }
+
+    public void Highlight(Color color) {
+        _image.color =  color;
+    }
 }

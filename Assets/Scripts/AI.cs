@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 public class AI
@@ -87,5 +88,44 @@ public class AI
         }
 
         return CellState.None;
+    }
+
+    public static List<(int, int)> GetWinningCells(CellState[,] board) {
+        // Check rows
+        for (int row = 0; row < 3; row++) {
+            if (board[row, 0] != CellState.None &&
+                board[row, 0] == board[row, 1] &&
+                board[row, 1] == board[row, 2])
+            {
+                return new List<(int, int)> { (row, 0), (row, 1), (row, 2) };
+            }
+        }
+
+        // Check columns
+        for (int col = 0; col < 3; col++) {
+            if (board[0, col] != CellState.None &&
+                board[0, col] == board[1, col] &&
+                board[1, col] == board[2, col])
+            {
+                return new List<(int, int)> { (0, col), (1, col), (2, col) };
+            }
+        }
+
+        // Check diagonals
+        if (board[0, 0] != CellState.None &&
+            board[0, 0] == board[1, 1] &&
+            board[1, 1] == board[2, 2])
+        {
+            return new List<(int, int)> { (0, 0), (1, 1), (2, 2) };
+        }
+
+        if (board[0, 2] != CellState.None &&
+            board[0, 2] == board[1, 1] &&
+            board[1, 1] == board[2, 0])
+        {
+            return new List<(int, int)> { (0, 2), (1, 1), (2, 0) };
+        }
+
+        return null; // No winner
     }
 }

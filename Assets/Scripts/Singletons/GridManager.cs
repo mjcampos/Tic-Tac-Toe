@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Singletons {
@@ -44,6 +45,15 @@ namespace Singletons {
                 for (int col = 0; col < _cols; col++) {
                     _grid[row, col].LockCell();
                 }
+            }
+        }
+
+        public void HighlightWinningCells(WinState winner) {
+            Color color = winner == WinState.Player ? Color.green : Color.red;
+            List<(int row, int col)> winningCells = AI.GetWinningCells(BattleManager.Instance.BoardPosition);
+
+            foreach ((int row, int col) in winningCells) {
+                _grid[row, col].Highlight(color);
             }
         }
     }
