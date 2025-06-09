@@ -27,7 +27,7 @@ namespace Singletons {
             endTurnButton.GetComponent<Button>().interactable = false;
             turnText.text = "Enemy Turn";
             
-            BattleManager.Instance.PlayerEndsTurn();
+            BattleManager.Instance.EndTurn();
         }
 
         public void StartPlayerTurn() {

@@ -8,7 +8,7 @@ namespace Singletons {
         [SerializeField] TurnState currentPhase = TurnState.PlayerTurn;
         
         public CellState[,] BoardPosition { get; } = new CellState[3, 3];
-        Vector2Int? _lastPlayerMove;
+        Vector2Int? _lastMovePlayed;
 
         void Awake() {
             if (Instance != null && Instance != this) {
@@ -31,9 +31,9 @@ namespace Singletons {
             }
         }
 
-        public void PlayerEndsTurn() {
+        public void EndTurn() {
             LockCell();
-            _lastPlayerMove = null;
+            _lastMovePlayed = null;
             AdvanceTurn();
         }
 
@@ -52,12 +52,12 @@ namespace Singletons {
 
             switch (currentPhase) {
                 case TurnState.PlayerTurn:
-                    Debug.Log("Player Turn");
+                    //Debug.Log("Player Turn");
                     PlayerStartsTurn();
                     break;
                 case TurnState.EnemyTurn:
-                    Debug.Log("Enemy Turn");
-                    AdvanceTurn();
+                    //Debug.Log("Enemy Turn");
+                    EnemyStartsTurn();
                     break;
             }
         }
@@ -88,25 +88,36 @@ namespace Singletons {
             CellState next = GetNextPlayerState(current);
             
             // Clear up the previously selected cell
-            if (_lastPlayerMove  != null) {
-                SetCellState(_lastPlayerMove.Value.x, _lastPlayerMove.Value.y, CellState.None);
+            if (_lastMovePlayed  != null) {
+                SetCellState(_lastMovePlayed.Value.x, _lastMovePlayed.Value.y, CellState.None);
                 
                 // Message the cell to convert its UI to none
-                GridManager.Instance.ClearACell(_lastPlayerMove.Value.x, _lastPlayerMove.Value.y);
+                GridManager.Instance.ClearACell(_lastMovePlayed.Value.x, _lastMovePlayed.Value.y);
             }
             
             // Enable End Turn button is next value is not blank
             UIManager.Instance.InteractWithEndButton(next != CellState.None);
             
             SetCellState(row, col, next);
-            _lastPlayerMove = new Vector2Int(row, col);
+            _lastMovePlayed = new Vector2Int(row, col);
         }
 
         // Lock cell to prevent future interactions
         void LockCell() {
-            if (_lastPlayerMove != null) {
-                GridManager.Instance.LockACell(_lastPlayerMove.Value.x, _lastPlayerMove.Value.y);
+            if (_lastMovePlayed != null) {
+                GridManager.Instance.LockACell(_lastMovePlayed.Value.x, _lastMovePlayed.Value.y);
             }
+        }
+
+        void EnemyStartsTurn() {
+            // AI makes a move
+            Vector2Int aiMove = AI.GetBestMove(BoardPosition);
+            
+            SetCellState(aiMove.x, aiMove.y, CellState.O);
+            _lastMovePlayed = aiMove;
+            GridManager.Instance.ClearACell(aiMove.x, aiMove.y);
+            
+            EndTurn();
         }
     }
 }
